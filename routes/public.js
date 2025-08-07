@@ -5,23 +5,28 @@ const route = express.Router();
 
 route.post('/register', async (req, res)=>{
     const {matricula, nome, senha } = req.body;
-    res.status(200).json({ message: 'Route register - sucess'})
+   
 
     try{
-        async function createUser(){
-        const { user } = await supabase
+        const {data, error} = await supabase
         .from('users')
-        .insert([
+        .insert([{
             matricula, nome, senha
-        ])
+    }])
+        .select()
+        .single()
 
-        console.log(user)
+        if(error) {
+            console.error('Error inserting data:', error);
+            return res.status(400).json({ message: 'Erro ao inserir dados' });
+        }
+    
+        console.log(data)
         res.status(200).json({ message: 'resgistrado'})
-    }
-   createUser();
     
     } catch(error){
-        res.status(500).json({message:'Erro ao resgistrar'})
+        console.error('Error during registration:', error);
+        return res.status(500).json({message:'Erro ao resgistrar'})
     }
 });
 
