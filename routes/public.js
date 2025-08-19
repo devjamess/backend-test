@@ -103,4 +103,35 @@ route.get('/test-user', async (req, res) => {
 
 });
 
+
+route.post('/resgister-escale',  async (req, res)=> {
+   const { escala, folga_sem, folgas, equipe, jornada, horario  
+} = req.body;
+
+  try{
+    const {data, error} = await supabase
+    .from('escale')
+    .insert([{
+      folgas, 
+      folga_sem, 
+      escala,
+      jornada,
+      horario,
+      equipe
+    }])
+    .select()
+
+    if(error) {
+           
+      return res.status(400).json({ message: 'Erro ao inserir dados' });
+  }
+
+  console.log(data)
+  res.status(200).json({ message: 'escala resgistrada'})
+
+} catch(error){
+  
+  return res.status(500).json({message:'Erro ao resgistrar escala'})
+}
+})
 export default route;
